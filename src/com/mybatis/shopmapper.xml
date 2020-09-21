@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ShopDao">
+	
+<!-- 	<resultMap type="user" id="um">
+		<result property="identification" column="id"/>
+		<result property="password" column="pwd"/>
+		<result property="username" column="name"/>
+	</resultMap> -->
+	
+<!-- ========================Oracle=========================	 -->
+<!-- 	<insert id="insert" parameterType="shop">
+		INSERT INTO SHOP VALUES 
+		(S_SEQ.NEXTVAL, #{userid}, #{shopname}, #{shopphonenumber}, #{address} , 37.123456, 127.056490, SYSDATE, 0, #{info}, #{img1}, #{img2}, #{img3})
+	</insert>
+	
+   <update id="update" parameterType="shop">
+      UPDATE SHOP SET SHOPNAME=#{shopname}, SHOPPHONENUMBER=#{shopphonenumber}, ADDRESS=#{address}, INFO=#{info}, IMG1=#{img1}, IMG2=#{img2}, IMG3=#{img3} WHERE SHOPID=#{shopid}
+   </update>
+	
+	<delete id="delete" parameterType="Integer">
+		DELETE FROM SHOP WHERE SHOPID=#{k}
+	</delete>
+	
+	<select id="select" parameterType="Integer" 
+	resultType="shop">
+		SELECT * FROM SHOP WHERE SHOPID=#{k}
+	</select>
+	
+	<select id="selectall" resultType="shop">
+		SELECT * FROM SHOP ORDER BY SHOPID
+	</select>
+	
+	<update id="setcnt" parameterType="Integer">
+		UPDATE SHOP SET CNT=CNT+1 WHERE SHOPID=#{k}
+	</update>
+	
+	<update id="setxy" parameterType="shop">
+		 <![CDATA[ UPDATE SHOP SET LAT=#{lon}, LON=#{lat} WHERE SHOPID=(SELECT MAX(SHOPID) FROM SHOP WHERE SHOPID < 1000)  ]]>
+	</update>
+	
+	<select id="rankshop" resultType="shop">
+		 <![CDATA[ SELECT A.SHOPID,A.SHOPNAME,A.IMG1,A.SUMUP FROM( SELECT SS.SHOPID,SS.SHOPNAME,IMG1,ROW_NUMBER() OVER (ORDER BY SUM(NVL(UP,0)) DESC, SS.SHOPID DESC) AS RANK ,SUM(NVL(UP,0)) AS SUMUP  FROM SHOP_RECOMMEND SR, SHOP SS  WHERE SS.SHOPID = SR.SHOPID(+) GROUP BY SS.SHOPID,SS.SHOPNAME,IMG1) A WHERE A.RANK <= 5]]>
+	</select> -->
+	
+<!-- =============================MariaDB================================ -->
+
+	<insert id="insert" parameterType="shop">
+		INSERT INTO SHOP VALUES 
+		(LASTVAL(S_SEQ), #{userid}, #{shopname}, #{shopphonenumber}, #{address} , 37.123456, 127.056490, SYSDATE, 0, #{info}, #{img1}, #{img2}, #{img3})
+	</insert>
+	
+   <update id="update" parameterType="shop">
+      UPDATE SHOP SET SHOPNAME=#{shopname}, SHOPPHONENUMBER=#{shopphonenumber}, ADDRESS=#{address}, INFO=#{info}, IMG1=#{img1}, IMG2=#{img2}, IMG3=#{img3} WHERE SHOPID=#{shopid}
+   </update>
+	
+	<delete id="delete" parameterType="Integer">
+		DELETE FROM SHOP WHERE SHOPID=#{k}
+	</delete>
+	
+	<select id="select" parameterType="Integer" 
+	resultType="shop">
+		SELECT * FROM SHOP WHERE SHOPID=#{k}
+	</select>
+	
+	<select id="selectall" resultType="shop">
+		SELECT * FROM SHOP ORDER BY SHOPID
+	</select>
+	
+	<update id="setcnt" parameterType="Integer">
+		UPDATE SHOP SET CNT=CNT+1 WHERE SHOPID=#{k}
+	</update>
+	
+	<update id="setxy" parameterType="shop">
+		 <![CDATA[ UPDATE SHOP SET LAT=#{lon}, LON=#{lat} WHERE SHOPID=(SELECT MAX(SHOPID) FROM SHOP WHERE SHOPID < 1000)  ]]>
+	</update>
+	
+	<select id="rankshop" resultType="shop">
+		 <![CDATA[ SELECT A.SHOPID,A.SHOPNAME,A.IMG1,A.SUMUP FROM( SELECT SS.SHOPID,SS.SHOPNAME,IMG1,ROW_NUMBER() OVER (ORDER BY SUM(IFNULL(UP,0)) DESC, SS.SHOPID DESC) AS RANK ,SUM(IFNULL(UP,0)) AS SUMUP  FROM SHOP_RECOMMEND SR LEFT JOIN SHOP SS  ON SS.SHOPID = SR.SHOPID GROUP BY SS.SHOPID,SS.SHOPNAME,IMG1) A WHERE A.RANK <= 5]]>
+	</select>
+	
+	
+</mapper>
